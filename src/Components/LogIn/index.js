@@ -4,7 +4,10 @@ import { Container, Typography, Grid, TextField, Button } from '@mui/material';
 export default () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    const [errors, setErrors] = useState({
+        username: false,
+        password: false,
+      });
     const handleLogin = () => {
        
         console.log('Logging in with:', { username, password });
@@ -25,6 +28,7 @@ export default () => {
                                 variant="outlined"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                required
                             />
                         </Grid>
                         <Grid item xs={12}>

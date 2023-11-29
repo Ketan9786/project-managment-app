@@ -64,6 +64,7 @@ export default () => {
       <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h4">Register Now</Typography>
         <Box component="form" noValidate sx={{ mt: 3 }}>
+        <form onSubmit={handleSignIn}>
           <TextField
             label="Full Name"
             name="fullName"
@@ -124,9 +125,10 @@ export default () => {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </Select>
-          <Button onClick={handleSignIn} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>
+          </form>
         </Box>
       </Box>
     </Container>
