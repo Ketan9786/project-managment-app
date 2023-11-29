@@ -8,7 +8,7 @@ import Project from "./Components/Project";
 import ProjectForm from "./Components/ProjectForm";
 import Task from "./Components/Task";
 import TaskForm from "./Components/TaskForm";
-import Users from "./Components/User";
+import User from "./Components/User";
 import SignIn from "./Components/SignIn";
 import Dashboard from './Components/Dashboard';
 function App() {
@@ -23,7 +23,7 @@ function App() {
         <Route path="/projectform" element={<ProjectForm />} />
         <Route path="/task" element={<Task />} />
         <Route path="/taskform" element={<TaskForm />} />
-        <Route path="/users" element={<Users />} />
+        <Route path="/user" element={<User />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
