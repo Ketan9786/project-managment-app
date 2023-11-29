@@ -5,22 +5,26 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useState } from "react";
 import { Link } from "react-router-dom";
-export default () => {
 
+const Navbar = () => {
     const [login, setLogin] = useState(false);
+
+    const linkStyle = { textDecoration: "none", color: "white" };
+
     return (
         <div className="navbar-container">
-            <img src="" alt="LOGO"></img>
+           <Link to="/"> <img src="" alt="Company Logo"></img></Link>
             <Stack spacing={3} direction="row">
-                <Button variant="contained" size="small"><Link to="/dashboard" style={{ textDecoration: "none", color: "white" }}>Project</Link></Button>
-                <Button variant="contained" size="small"><Link to="/dashboard" style={{ textDecoration: "none", color: "white" }}>Task</Link></Button>
-                <Button variant="contained" size="small"><Link to="/dashboard" style={{ textDecoration: "none", color: "white" }}>Users</Link></Button>
+                <Link to="/dashboard" style={linkStyle}><Button variant="contained" size="small">Project</Button></Link>
+                <Link to="/dashboard" style={linkStyle}><Button variant="contained" size="small">Task</Button></Link>
+                <Link to="/dashboard" style={linkStyle}><Button variant="contained" size="small">Users</Button></Link>
             </Stack>
             <div className="navbar-last-containt">
                 <Search />
-                {login ? (<AccountButton />) : (<Button variant="contained" size="small">Sign In</Button>)}
+                {login ? <AccountButton /> : <Link to="/signin"><Button variant="contained" size="small">Sign In</Button></Link>}
             </div>
-
         </div>
-    )
+    );
 }
+
+export default Navbar;
