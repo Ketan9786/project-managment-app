@@ -1,0 +1,29 @@
+.navbar-container{
+    display: flex;
+    justify-content: space-between;
+    padding: 1% 2%;
+
+}
+
+.navbar-container h3{
+    display: inline-flex;
+    margin: 0 50px;
+}
+
+.navbar-container button{
+    display: inline-flex;
+    height: fit-content;
+}
+
+.navbar-containt{
+    display: flex;
+    border: 2px solid ;
+    gap: 200px;
+ 
+}
+.navbar-last-containt{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
