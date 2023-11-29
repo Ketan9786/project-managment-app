@@ -1,61 +1,70 @@
 import React, { useState } from 'react';
-import { Container, Typography, Grid, TextField, Button } from '@mui/material';
+import { Container, Typography, Box, Select } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
 
 export default () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({
-        username: false,
-        password: false,
-      });
-    const handleLogin = () => {
-       
-        console.log('Logging in with:', { username, password });
+    const [logInDetails, setLogInDetails] = useState({
+        userName: '',
+        password: ''
+    });
+
+
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target || e;
+        setLogInDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+        
+    };
+
+    const handleSignIn = (e) => {
+      
+        e.preventDefault();
+        
+        console.log(logInDetails)
+
+
     };
 
     return (
-        <Container component="main" maxWidth="xs" sx={{ marginTop: "100px" }}>
-            <div>
-                <Typography variant="h5" align="center" gutterBottom>
-                    Welcome to Project Management
-                </Typography>
-                <form>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Username"
-                                variant="outlined"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Password"
-                                type="password"
-                                variant="outlined"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                onClick={handleLogin}
-                            >
-                                Log In
-                            </Button>
-                            </Grid>
-                    </Grid>
+        <Container component="main" maxWidth="xs">
+            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Typography variant="h5">Welcome To Project Mangment App</Typography>
+
+                <form onSubmit={handleSignIn}>
+                    <TextField
+                        label="User Name"
+                        name="userName"
+                        value={logInDetails.userName}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                       
+                    />
+                    <TextField
+                        label="Password"
+                        name="password"
+                        value={logInDetails.password}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                        type="password"
+                        
+                    />
+
+
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        Sign In
+                    </Button>
                 </form>
-            </div>
+
+            </Box>
         </Container>
     );
 };
-
-

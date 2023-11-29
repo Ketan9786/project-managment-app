@@ -14,13 +14,6 @@ export default () => {
     gender: 'male',
   });
 
-  const [errors, setErrors] = useState({
-    fullName: false,
-    password: false,
-    email: false,
-    mobileNumber: false,
-    birthDate: false,
-  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target || e;
@@ -28,33 +21,11 @@ export default () => {
       ...prevDetails,
       [name]: value,
     }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: false,
-    }));
+   
   };
 
   const handleSignIn = (e) => {
     e.preventDefault();
-
-    
-    const requiredFields = ['fullName', 'password', 'email', 'mobileNumber', 'birthDate'];
-
-    let formIsValid = true;
-    const newErrors = {};
-
-    requiredFields.forEach((field) => {
-      if (!userDetails[field]) {
-        formIsValid = false;
-        newErrors[field] = true;
-      }
-    });
-
-    if (!formIsValid) {
-      setErrors(newErrors);
-      return;
-    }
-
     console.log('Signing In:', userDetails);
     
   };
@@ -63,7 +34,7 @@ export default () => {
     <Container component="main" maxWidth="xs">
       <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h4">Register Now</Typography>
-        <Box component="form" noValidate sx={{ mt: 3 }}>
+      
         <form onSubmit={handleSignIn}>
           <TextField
             label="Full Name"
@@ -73,7 +44,7 @@ export default () => {
             fullWidth
             margin="normal"
             required
-            error={errors.fullName}
+           
           />
           <TextField
             label="Password"
@@ -84,7 +55,7 @@ export default () => {
             margin="normal"
             required
             type="password"
-            error={errors.password}
+            
           />
 
           <TextField
@@ -96,7 +67,7 @@ export default () => {
             margin="normal"
             required
             type="email"
-            error={errors.email}
+            
           />
           <TextField
             label="Mobile Number"
@@ -107,7 +78,7 @@ export default () => {
             margin="normal"
             required
             type="number"
-            error={errors.mobileNumber}
+            
           />
           <TextField
             label=""
@@ -118,7 +89,7 @@ export default () => {
             margin="normal"
             required
             type="date"
-            error={errors.birthDate}
+          
           />
           <Select value={userDetails.gender} onChange={handleInputChange} name="gender">
             <MenuItem value="male">Male</MenuItem>
@@ -129,7 +100,7 @@ export default () => {
             Sign In
           </Button>
           </form>
-        </Box>
+   
       </Box>
     </Container>
   );
