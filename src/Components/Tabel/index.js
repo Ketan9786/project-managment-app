@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-
+import TablePagination from '@mui/material/TablePagination';
 function createData(project, key, projectHead, tasks, pendingtask, completedtask) {
   return { project, key, projectHead, tasks, pendingtask, completedtask };
 }
@@ -18,28 +18,29 @@ const initialRows = [
   createData('Eclair Eclair', 'EEC', 16.0, 24, 6.0, 2),
   createData('Cupcake Cupcake', 'CUP', 3.7, 67, 4.3, 3),
   createData('Gingerbread', 'GIN', 16.0, 49, 3.9, 1),
-  createData('Gingerbread', 'GIN', 16.0, 49, 3.9, 1),
-  createData('Gingerbread', 'GIN', 16.0, 49, 3.9, 1),
+  createData('ketab Kulk', 'KKU', 16.0, 49, 3.9, 1),
+  createData('SUNIL KUL', 'SKU', 16.0, 49, 3.9, 1),
 ];
 
 export default () => {
   const [rows, setRows] = React.useState(initialRows);
   const [editingRow, setEditingRow] = React.useState(null);
-
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const handleEditClick = (key) => {
     console.log(key)
     setEditingRow(key);
   };
 
   const handleSaveClick = (key) => {
-   
+
     setRows((prevRows) =>
       prevRows.map((row) =>
         row.key === key
           ? {
-              ...row,
-              
-            }
+            ...row,
+
+          }
           : row
       )
     );
@@ -54,8 +55,16 @@ export default () => {
       )
     );
   };
+  const handleChangePage = (event, newPage) => {
+    console.log(newPage);
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  return (<div style={{ display: "flex", alignItems: 'center', flexDirection: "column" }}>
 
-  return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="simple table">
         <TableHead>
@@ -70,7 +79,11 @@ export default () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+        {rows
+              
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+        
             <TableRow
               key={row.key}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -88,43 +101,43 @@ export default () => {
               </TableCell>
               <TableCell align="right">
                 {row.key}
-               </TableCell>
+              </TableCell>
               <TableCell align="right">  {editingRow === row.key ? (
-                  <input
-                    type="text"
-                    value={row.projectHead}
-                    onChange={(e) => handleEditChange(e, row.key, 'projectHead')}
-                  />
-                ) : (
-                  row.projectHead
-                )}</TableCell>
+                <input
+                  type="text"
+                  value={row.projectHead}
+                  onChange={(e) => handleEditChange(e, row.key, 'projectHead')}
+                />
+              ) : (
+                row.projectHead
+              )}</TableCell>
               <TableCell align="right">{editingRow === row.key ? (
-                  <input
-                    type="text"
-                    value={row.tasks}
-                    onChange={(e) => handleEditChange(e, row.key, 'tasks')}
-                  />
-                ) : (
-                  row.tasks
-                )}</TableCell>
+                <input
+                  type="text"
+                  value={row.tasks}
+                  onChange={(e) => handleEditChange(e, row.key, 'tasks')}
+                />
+              ) : (
+                row.tasks
+              )}</TableCell>
               <TableCell align="right">{editingRow === row.key ? (
-                  <input
-                    type="text"
-                    value={row.pendingtask}
-                    onChange={(e) => handleEditChange(e, row.key, 'pendingtask')}
-                  />
-                ) : (
-                  row.pendingtask
-                )}</TableCell>
+                <input
+                  type="text"
+                  value={row.pendingtask}
+                  onChange={(e) => handleEditChange(e, row.key, 'pendingtask')}
+                />
+              ) : (
+                row.pendingtask
+              )}</TableCell>
               <TableCell align="right">{editingRow === row.key ? (
-                  <input
-                    type="text"
-                    value={row.completedtask}
-                    onChange={(e) => handleEditChange(e, row.key, 'pendingtask')}
-                  />
-                ) : (
-                  row.completedtask
-                )}</TableCell>
+                <input
+                  type="text"
+                  value={row.completedtask}
+                  onChange={(e) => handleEditChange(e, row.key, 'pendingtask')}
+                />
+              ) : (
+                row.completedtask
+              )}</TableCell>
               <TableCell align="right">
                 {editingRow === row.key ? (
                   <Button onClick={() => handleSaveClick(row.key)}>Save</Button>
@@ -137,5 +150,16 @@ export default () => {
         </TableBody>
       </Table>
     </TableContainer>
+
+    <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+  </div>
   );
 };
