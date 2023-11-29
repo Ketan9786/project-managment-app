@@ -1,5 +1,5 @@
 import { Button, Container, Stack, Typography } from "@mui/material"
-import Tabel from "../Tabel";
+import TabelTask from "../TabelTask";
 import { Link } from "react-router-dom";
 
 export default () => {
@@ -18,13 +18,13 @@ export default () => {
             </Typography>
             <Stack direction="row" justifyContent="space-between">
                 <Typography variant="h5" component="div">
-                    Task in Project :22
+                    Task in Tasks :22
                 </Typography>
                 <Link to="/taskform"><Button variant="contained">New Task
                 </Button></Link>
 
             </Stack>
-            <Tabel />
+            <TabelTask />
         </Stack>
     </Container>)
 }
