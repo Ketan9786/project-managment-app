@@ -8,8 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TablePagination from '@mui/material/TablePagination';
-function createData(project, key, projectHead, tasks, pendingtask, completedtask) {
-  return { project, key, projectHead, tasks, pendingtask, completedtask };
+function createData(name, key, projectHead, tasks, pendingtask, completedtask) {
+  return { name, key, projectHead, tasks, pendingtask, completedtask };
 }
 
 const initialRows = [
@@ -92,11 +92,11 @@ export default () => {
                 {editingRow === row.key ? (
                   <input
                     type="text"
-                    value={row.project}
-                    onChange={(e) => handleEditChange(e, row.key, 'project')}
+                    value={row.name}
+                    onChange={(e) => handleEditChange(e, row.key, 'name')}
                   />
                 ) : (
-                  row.project
+                  row.name
                 )}
               </TableCell>
               <TableCell align="right">
@@ -115,7 +115,7 @@ export default () => {
                 <input
                   type="text"
                   value={row.tasks}
-                  onChange={(e) => handleEditChange(e, row.key, 'tasks')}
+                  onChangenameproject={(e) => handleEditChange(e, row.key, 'tasks')}
                 />
               ) : (
                 row.tasks
