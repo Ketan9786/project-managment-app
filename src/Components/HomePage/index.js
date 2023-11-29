@@ -5,14 +5,14 @@ import Dashboard from "../Dashboard";
 import "./HomePage.css"
 
 export default () => {
-    const [login, setLogin] = useState(true);
+    const [login, setLogin] = useState(false);
     return (
         <>
             {login ? (<Dashboard/>) :
                 (
                     <div className="homePage">
-                        <Typography>Please login to manage project && Task</Typography>
-                        <Button><Link to="/login">LogIn</Link></Button>
+                        <Typography variant="h4" component="h4">Please login to manage project && Task</Typography>
+                        <Link to="/login">  <Button variant="contained" >LogIn</Button></Link>
                     </div>
 
 
