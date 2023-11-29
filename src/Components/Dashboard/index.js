@@ -2,22 +2,32 @@ import { Button, Container, Stack, Typography } from "@mui/material";
 import Search from "../Search";
 import { Link } from "react-router-dom";
 import Tabel from "../Tabel";
-export default ()=>{
-
+import TabelTask from "../TabelTask";
+import { useState } from "react";
+import Login from "../LogIn";
+export default () => {
+    const[login,setLogin]=useState(false);
+    const [currentView, setCurrentView] = useState("")
     return (<Container>
-        <Stack direction="column">
-        <Typography variant="h5" component="h5">
-            Total project : 22
-        </Typography>
-        <Stack  direction="row" justifyContent="space-between">
-            <Search/>
-           <Link to="/projectform"> <Button variant="contained">Create Project</Button></Link>
+        {
+            login ? (<>
 
-        
-        </Stack>
-        <Typography component="div" sx={{marginTop:"30px"}}></Typography>
-        <Tabel/>
-        </Stack>
-        
+                <Stack direction="column">
+                    <Typography variant="h5" component="h5">
+                        Total {(currentView == "project" || currentView == "user") ? "Project" : "Task"} : 22
+                    </Typography>
+                    <Stack direction="row" justifyContent="space-between">
+                        <Search />
+                        <Link to={(currentView == "project" || currentView == "user") ? "/projectform" : "/taskform"}> <Button variant="contained">Create New {(currentView == "project" || currentView == "user") ? "project" : "Task"} </Button></Link>
+
+
+                    </Stack>
+                    <Typography component="div" sx={{ marginTop: "30px" }}></Typography>
+                    {(currentView == "project" || currentView == "user") ? <Tabel /> : <TabelTask />}
+                </Stack>
+
+            </>) : (<Login/>)
+        }
+
     </Container>)
 }
