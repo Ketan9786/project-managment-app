@@ -3,9 +3,25 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 const UsersModel = require("./models/Users");
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cookieParser =require('cookie-parser');
+
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
+app.use(cors({
+    origin:["http://localhost:3001"],
+    methods:["GET","POST"],
+    credentials:true
+
+}));
+app.use(cookieParser())
 
 mongoose.connect("mongodb://127.0.0.1:27017/users", { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -20,7 +36,9 @@ app.post('/login', (req, res) => {
                     res.json("password is incorrect")
                 }
                 if(response){
-                    res.json("Sucess")
+                    const token= jwt.sign({email:user.email},"jwt-secret-key",{expiresIn:"1d"})
+                    res.cookie("token",token);
+                    res.json("Sucess");
                 }
                })
             } else {
@@ -42,6 +60,6 @@ app.post('/register', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001; 
-app.listen(PORT, () => {
+app.listen(3001, () => {
     console.log(`Server is running on port ${PORT}`);
 });

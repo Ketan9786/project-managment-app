@@ -9,32 +9,26 @@ export default () => {
     //     email: '',
     //     password: ''
     // });
+    axios.defaults.withCredentials = true;
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");
+    const navigate = useNavigate();
 
-const navigate = useNavigate();
-
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e.target || e;
-    //     setLogInDetails((prevDetails) => ({
-    //         ...prevDetails,
-    //         [name]: value,
-    //     }));
-        
-    // };
 
     const handleLogIn = (e) => {
-      
         e.preventDefault();
-        axios.post('http://localhost:3001/login',{email,password})
-        .then(result => {
-            console.log(result)
-            navigate("/dashboard")
-        })
-        .catch(err => console.log(err))
-       
+        axios.post('http://localhost:3001/login', { email, password })
+            .then(result => {
+                console.log(result);
+                navigate("/dashboard");
+            })
+            .catch(error => {
+                console.error("Login failed:", error);
+                // Handle error, maybe display an error message to the user
+            });
     };
+    
 
     return (
         <Container component="main" maxWidth="xs">
@@ -46,22 +40,22 @@ const navigate = useNavigate();
                         label="Email"
                         name="email"
                         value={email}
-                        onChange={(e)=>{setEmail(e.target.value)}}
+                        onChange={(e) => { setEmail(e.target.value) }}
                         fullWidth
                         margin="normal"
                         required
-                       
+
                     />
                     <TextField
                         label="Password"
                         name="password"
                         value={password}
-                        onChange={(e)=>{setPassword(e.target.value)}}
+                        onChange={(e) => { setPassword(e.target.value) }}
                         fullWidth
                         margin="normal"
                         required
                         type="password"
-                        
+
                     />
 
 
