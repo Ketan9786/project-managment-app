@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import LogIn from './Components/LogIn';
@@ -11,7 +11,17 @@ import TaskForm from "./Components/TaskForm";
 import User from "./Components/User";
 import SignIn from "./Components/SignIn";
 import Dashboard from './Components/Dashboard';
+import { useDispatch,useSelector } from 'react-redux';
+import {fetchProject} from "./redux/slice/projectData";
+import {fetchUsers} from "./redux/slice/userData";
 function App() {
+  const dispatch=useDispatch();
+  dispatch(fetchUsers())
+  dispatch(fetchProject())
+  const state = useSelector((state)=>{
+    console.log("projectData",state.projectData);
+    console.log("userData",state.userData);
+  })
   return (
     <Router>
       <Navbar />
