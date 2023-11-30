@@ -6,8 +6,8 @@ import TabelTask from "../TabelTask";
 import { useState } from "react";
 import Login from "../LogIn";
 export default () => {
-    const[login,setLogin]=useState(false);
-    const [currentView, setCurrentView] = useState("")
+    const[login,setLogin]=useState(true);
+    const [currentView, setCurrentView] = useState("user")
     return (<Container>
         {
             login ? (<>

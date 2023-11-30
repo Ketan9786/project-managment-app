@@ -3,7 +3,8 @@ import { Container, Typography, Box, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 export default () => {
   const [userDetails, setUserDetails] = useState({
     fullName: '',
@@ -14,7 +15,7 @@ export default () => {
     gender: 'male',
   });
 
-
+const navigate =useNavigate();
   const handleInputChange = (e) => {
     const { name, value } = e.target || e;
     setUserDetails((prevDetails) => ({
@@ -26,7 +27,22 @@ export default () => {
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    console.log('Signing In:', userDetails);
+    axios.post('http://localhost:3001/register',userDetails)
+    .then(result => {
+      
+      console.log(result)
+      setUserDetails({
+        fullName: '',
+        password: '',
+        email: '',
+        mobileNumber: '',
+        birthDate: '',
+        gender: 'male',
+      })  
+      navigate("/login")
+    })
+    .catch(err=> console.log(err))
+ 
     
   };
 
