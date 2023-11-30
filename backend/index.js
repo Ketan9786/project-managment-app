@@ -66,7 +66,19 @@ app.post('/projects', (req, res) => {
     .catch(err => res.status(500).json(err)); 
 });
 
+app.get('/users', (req, res) => {
+    
+    UsersModel.find({})
+        .then(users => res.json(users))
+        .catch(err => res.status(500).json(err));
+});
 
+app.get('/projects', (req, res) => {
+    
+    ProjectModel.find({})
+        .then(projects => res.json(projects))
+        .catch(err => res.status(500).json(err));
+});
 
 const PORT = process.env.PORT || 3001; 
 app.listen(3001, () => {
