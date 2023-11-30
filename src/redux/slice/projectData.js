@@ -8,7 +8,7 @@ const projectSlice = createSlice({
     name: 'projectData',
     initialState: {
         isLoading: true,
-        projectData: null,
+        data: null,
         isError: false,
     },
 
@@ -18,7 +18,7 @@ const projectSlice = createSlice({
         })
         builder.addCase(fetchProject.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.projectData = action.payload;
+            state.data = action.payload;
 
         })
         builder.addCase(fetchProject.rejected, (state, action) => {

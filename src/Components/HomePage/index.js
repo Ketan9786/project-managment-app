@@ -4,16 +4,18 @@ import { Link } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import "./HomePage.css"
 import LogIn from "../LogIn";
+import { useSelector } from 'react-redux';
 export default () => {
-    const [login, setLogin] = useState(false);
+    const data = useSelector((state) => state.userLogin);
     return (
         <>
-            {login ? (<Dashboard />) :
-                (
-                    <LogIn />
+            {data.isLoggedIn ? (<Dashboard />) :
+                (<LogIn />)
+            }
+        </>)
 
 
-                )
-            }</>
-    )
+
+
+
 }

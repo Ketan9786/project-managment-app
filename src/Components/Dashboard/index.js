@@ -5,12 +5,16 @@ import Tabel from "../Tabel";
 import TabelTask from "../TabelTask";
 import { useState } from "react";
 import Login from "../LogIn";
+import { useSelector } from 'react-redux';
 export default () => {
-    const[login,setLogin]=useState(true);
-    const [currentView, setCurrentView] = useState("user")
+ 
+    const [currentView, setCurrentView] = useState("user");
+    const data = useSelector((state) => state.userLogin);
+  
+    
     return (<Container>
         {
-            login ? (<>
+            data.isLoggedIn ? (<>
 
                 <Stack direction="column">
                     <Typography variant="h5" component="h5">
@@ -23,7 +27,7 @@ export default () => {
 
                     </Stack>
                     <Typography component="div" sx={{ marginTop: "30px" }}></Typography>
-                    {(currentView == "project" || currentView == "user") ? <Tabel /> : <TabelTask />}
+                    {(currentView == "project" || currentView == "user") ? <Tabel/> : <TabelTask />}
                 </Stack>
 
             </>) : (<Login/>)

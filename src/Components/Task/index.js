@@ -1,4 +1,7 @@
-export default ()=>{
+import { useSelector } from 'react-redux';
+import LogIn from '../LogIn';
 
-    return (<>This is Task Page</>)
+export default ()=>{
+    const data = useSelector((state) => state.userLogin);
+    return (<>{data.isLoggedIn? (<>This is task Page</>):(<LogIn/>)}</>)
 }

@@ -1,10 +1,12 @@
 import { Button, Container, Stack, Typography } from "@mui/material"
 import Tabel from "../Tabel";
 import { Link } from "react-router-dom";
-
+import { useSelector } from 'react-redux';
+import LogIn from '../LogIn';
 export default () => {
 
-    return (<Container>
+    const data = useSelector((state) => state.userLogin);
+    return (<>{data.isLoggedIn?(<Container>
         <Stack>
             <Stack direction="row" justifyContent="space-between">
 
@@ -34,5 +36,5 @@ export default () => {
             </Stack>
             <Tabel />
         </Stack>
-    </Container>)
+    </Container>):(<LogIn/>)}</>)
 }
