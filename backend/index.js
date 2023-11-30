@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 const cors = require("cors");
 const UsersModel = require("./models/Users");
+const ProjectModel = require("./models/Project");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser =require('cookie-parser');
@@ -58,6 +59,14 @@ app.post('/register', (req, res) => {
     })
      
 });
+
+app.post('/projects', (req, res) => {
+    ProjectModel.create(req.body)
+    .then(project => res.json(project))
+    .catch(err => res.status(500).json(err)); 
+});
+
+
 
 const PORT = process.env.PORT || 3001; 
 app.listen(3001, () => {
