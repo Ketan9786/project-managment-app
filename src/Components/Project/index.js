@@ -46,10 +46,11 @@ export default () => {
             });
 
             if (response.ok) {
-                console.log(editedProjectData);
+                console.log('Project updated successfully:', editedProjectData);
                 setIsEditing(!isEditing);
             } else {
-                console.error('Failed to update project details');
+                const errorData = await response.json();
+                console.error('Failed to update project details:', errorData);
             }
         } catch (error) {
             console.error('Error updating project details:', error);
@@ -90,7 +91,7 @@ export default () => {
             </Stack>
 
 
-            <TabelTask projectid={projectData._id} />
+            <TabelTask pData={editedProjectData} />
         </Stack>
     </Container>) : (<LogIn />)}</>)
 
