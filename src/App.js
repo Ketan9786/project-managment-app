@@ -11,14 +11,16 @@ import TaskForm from "./Components/TaskForm";
 import User from "./Components/User";
 import SignIn from "./Components/SignIn";
 import Dashboard from './Components/Dashboard';
-
-
+import Cookies from "js-cookie";
+import { useDispatch } from 'react-redux';
+import { loginUser } from './redux/slice/userSlice';
 function App() {
-  
+  const dispatch = useDispatch();
+  const storedToken = Cookies.get('token');
   // const isLoggedIn = useSelector((state) => state.userLogin.isLoggedIn);
   // const token = useSelector((state) => state.userLogin.token);
 
-
+  dispatch(loginUser(storedToken));
 
   return (
     <Router>
