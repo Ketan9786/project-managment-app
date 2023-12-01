@@ -25,7 +25,7 @@ export default () => {
             .then(result => {
                 console.log(result);
                 const storedToken = Cookies.get('token');
-                console.log(storedToken)
+                console.log(storedToken);
                 if (storedToken) {
                     dispatch(loginUser(storedToken));
                 } else {
