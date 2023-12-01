@@ -10,6 +10,7 @@ const projectSlice = createSlice({
         isLoading: true,
         data: null,
         isError: false,
+        isLoggedIn: true,
     },
 
     extraReducers: (builder) => {

@@ -4,23 +4,33 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../redux/slice/userSlice';
+import Cookies from "js-cookie";
+
 export default () => {
-    // const [logInDetails, setLogInDetails] = useState({
-    //     email: '',
-    //     password: ''
-    // });
+    const dispatch = useDispatch();
     axios.defaults.withCredentials = true;
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const token = useSelector((state) => state.userLogin.token);
     const navigate = useNavigate();
 
 
     const handleLogIn = (e) => {
         e.preventDefault();
+
         axios.post('http://localhost:3001/login', { email, password })
             .then(result => {
                 console.log(result);
+                const storedToken = Cookies.get('token');
+                console.log(storedToken)
+                if (storedToken) {
+                    dispatch(loginUser(storedToken));
+                } else {
+
+                }
                 navigate("/dashboard");
             })
             .catch(error => {
@@ -28,7 +38,7 @@ export default () => {
                 // Handle error, maybe display an error message to the user
             });
     };
-    
+
 
     return (
         <Container component="main" maxWidth="xs">

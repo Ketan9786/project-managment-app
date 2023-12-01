@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import TablePagination from '@mui/material/TablePagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProject } from "../../redux/slice/projectData";
-import { fetchUsers } from "../../redux/slice/userData";
+
 export default () => {
   const [rows, setRows] = React.useState([]);
   const [editingRow, setEditingRow] = React.useState(null);
@@ -27,16 +27,18 @@ export default () => {
   },[])
 
   const handleEditClick = (key) => {
-    console.log(key)
+    setRows(data.data)
+   
     setEditingRow(key);
   };
 
   const handleSaveClick = (key) => {
-    
+    console.log(rows);
     setEditingRow(null);
   };
 
   const handleEditChange = (e, key, field) => {
+    
     const value = e.target.value;
     setRows((prevRows) =>
       prevRows.map((row) =>
@@ -100,7 +102,7 @@ export default () => {
                     <input
                       type="text"
                       defaultValue={row.id}
-                      onChange={(e) => handleEditChange(e, row._id, 'title')}
+                      onChange={(e) => handleEditChange(e, row._id, 'id')}
                     />
                   ) : (
                     row.id

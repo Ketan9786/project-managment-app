@@ -8,50 +8,40 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TablePagination from '@mui/material/TablePagination';
-function createData(title, id, assignee, deadline, priority, status) {
-  return { title, id, assignee, deadline, priority, status };
-}
-
-const initialRows = [
-  createData('Frozen yoghurt', 'FYO01', "Ketan Kulkarni", "30/11/2023", "p1", "In Progress"),
-  createData('Ice cream sandwich', 'ICS02', "Ketan Kulkarni", "30/11/2023", "p1", "In Progress"),
-  createData('Eclair Eclair', 'EEC02', "Ketan Kulkarni", "30/11/2023", "p2", "In Progress"),
-  createData('Cupcake Cupcake', 'CUP01', "Ketan Kulkarni", "30/11/2023", "p2", "In Progress"),
-  createData('Gingerbread', 'GIN01', "Ketan Kulkarni", "30/11/2023", "p2", "In Progress"),
-  createData('ketab Kulk', 'KKU01', "Ketan Kulkarni", "30/11/2023", "p3", "In Progress"),
-  createData('SUNIL KUL', 'SKU01', "Ketan Kulkarni", "30/11/2023", "p2", "In Progress"),
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProject } from "../../redux/slice/projectData";
 
 export default () => {
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState([]);
   const [editingRow, setEditingRow] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const handleEditClick = (id) => {
-    console.log(id)
-    setEditingRow(id);
+
+  //data from redux store
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.projectData);
+
+
+  React.useEffect(() => {
+    dispatch(fetchProject())
+  }, [])
+
+  const handleEditClick = (key) => {
+    setRows(data.data)
+    setEditingRow(key);
   };
 
-  const handleSaveClick = (id) => {
-
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === id
-          ? {
-            ...row,
-
-          }
-          : row
-      )
-    );
+  const handleSaveClick = (key) => {
+    console.log(rows);
     setEditingRow(null);
   };
 
-  const handleEditChange = (e, id, field) => {
+  const handleEditChange = (e, key, field) => {
+    setRows(data.data)
     const value = e.target.value;
     setRows((prevRows) =>
       prevRows.map((row) =>
-        row.id === id ? { ...row, [field]: value } : row
+        row._id === key ? { ...row, [field]: value } : row
       )
     );
   };
@@ -63,103 +53,127 @@ export default () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (data.isLoading) {
+
+    return <h1>isLoading ...</h1>
+  }
+
   return (<div style={{ display: "flex", alignItems: 'center', flexDirection: "column" }}>
 
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Project</TableCell>
-            <TableCell align="right">key</TableCell>
-            <TableCell align="right">Project Head</TableCell>
-            <TableCell align="right">Tasks</TableCell>
-            <TableCell align="right">Pending Task</TableCell>
-            <TableCell align="right">Completed Task</TableCell>
-            <TableCell align="right">Actions</TableCell>
+            <TableCell>Title</TableCell>
+            <TableCell align="right">id</TableCell>
+            <TableCell align="right">Assignee</TableCell>
+            <TableCell align="right">Deadline</TableCell>
+            <TableCell align="right">priority</TableCell>
+            <TableCell align="right">status</TableCell>
+
           </TableRow>
         </TableHead>
         <TableBody>
-        {rows
-              
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-        
-            <TableRow
-              key={row.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {editingRow === row.id ? (
+          {data.data
+
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row) => (
+
+              <TableRow
+                key={row._id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {editingRow === row._id ? (
+                    <input
+                      type="text"
+                      defaultValue={row.title}
+                      onChange={(e) => handleEditChange(e, row._id, 'title')}
+                    />
+                  ) : (
+                    row.title
+                  )}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {editingRow === row._id ? (
+                    <input
+                      type="text"
+                      defaultValue={row.id}
+                      onChange={(e) => handleEditChange(e, row._id, 'id')}
+                    />
+                  ) : (
+                    row.id
+                  )}
+                </TableCell>
+                <TableCell align="right">  {editingRow === row._id ? (
                   <input
                     type="text"
-                    value={row.title}
-                    onChange={(e) => handleEditChange(e, row.id, 'project')}
+                    defaultValue={row.assignee
+                    }
+                    onChange={(e) => handleEditChange(e, row._id, 'assignee')}
                   />
                 ) : (
-                  row.title
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {row.id}
-              </TableCell>
-              <TableCell align="right">  {editingRow === row.id ? (
-                <input
-                  type="text"
-                  value={row.assignee}
-                  onChange={(e) => handleEditChange(e, row.id, 'projectHead')}
-                />
-              ) : (
-                row.assignee
-              )}</TableCell>
-              <TableCell align="right">{editingRow === row.id ? (
-                <input
-                  type="text"
-                  value={row.deadline}
-                  onChange={(e) => handleEditChange(e, row.id, 'tasks')}
-                />
-              ) : (
-                row.deadline
-              )}</TableCell>
-              <TableCell align="right">{editingRow === row.id ? (
-                <input
-                  type="text"
-                  value={row.priority}
-                  onChange={(e) => handleEditChange(e, row.id, 'pendingtask')}
-                />
-              ) : (
-                row.priority
-              )}</TableCell>
-              <TableCell align="right">{editingRow === row.id ? (
-                <input
-                  type="text"
-                  value={row.status}
-                  onChange={(e) => handleEditChange(e, row.id, 'pendingtask')}
-                />
-              ) : (
-                row.status
-              )}</TableCell>
-              <TableCell align="right">
-                {editingRow === row.id ? (
-                  <Button onClick={() => handleSaveClick(row.id)}>Save</Button>
+                  row.assignee
+
+                )}</TableCell>
+                <TableCell align="right">{editingRow === row._id ? (
+                  <input
+                    type="text"
+                    defaultValue={row.deadline}
+                    onChange={(e) => handleEditChange(e, row._id, 'deadline')}
+                  />
                 ) : (
-                  <Button onClick={() => handleEditClick(row.id)}>Edit</Button>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                  row.deadline
+                )}</TableCell>
+                <TableCell align="right">{editingRow === row._id ? (
+                  <input
+                    type="text"
+                    defaultValue={row.priority}
+                    onChange={(e) => handleEditChange(e, row._id, 'priority')}
+                  />
+                ) : (
+                  row.priority
+                )}</TableCell>
+
+                <TableCell align="right">
+                  {editingRow === row._id ? (
+                    <select
+                      // value={row.status}
+                      onChange={(e) => handleEditChange(e, row._id, 'status')}
+                    >
+                     <option value="open">Open</option>
+                      <option value="inProgress">In Progress</option>
+                      <option value="pending">Pending</option>
+                      <option value="resolved">Resolved</option>
+                    </select>
+                  ) : (
+                    "Open"
+                  )}
+                </TableCell>
+
+                <TableCell align="right">
+                  {editingRow === row._id ? (
+                    <Button onClick={() => handleSaveClick(row._id)}>Save</Button>
+                  ) : (
+                    <Button onClick={() => handleEditClick(row._id)}>Edit</Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
 
     <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      rowsPerPageOptions={[5, 10, 25]}
+      component="div"
+      count={rows.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
   </div>
   );
 };

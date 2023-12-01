@@ -80,6 +80,21 @@ app.get('/projects', (req, res) => {
         .catch(err => res.status(500).json(err));
 });
 
+app.put('/projects/:projectId', (req, res) => {
+    const projectId = req.params.projectId;
+
+    const updatedProjectData = req.body;
+
+    ProjectModel.findByIdAndUpdate(projectId, updatedProjectData, { new: true })
+        .then(updatedProject => {
+            if (!updatedProject) {
+                return res.status(404).json({ error: 'Project not found' });
+            }
+            res.json(updatedProject);
+        })
+        .catch(err => res.status(500).json(err));
+});
+
 const PORT = process.env.PORT || 3001; 
 app.listen(3001, () => {
     console.log(`Server is running on port ${PORT}`);

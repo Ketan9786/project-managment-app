@@ -3,24 +3,35 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { Container } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProject } from "../../redux/slice/projectData";
+import { fetchUsers } from "../../redux/slice/userData";
 import LogIn from '../LogIn';
+import axios from 'axios';
 const priorities = ['Low', 'Medium', 'High'];
 const statuses = ['Open', 'In Progress', 'Pending', 'Resolved'];
 
 export default () => {
-    const data = useSelector((state) => state.userLogin);
-    const [projects, setProjects] = useState(['Ketan','Kulkarni']);
+    const dispatch = useDispatch();
+    const data = useSelector((state) => state.projectData);
+    const userData = useSelector((state) => state.userData);
+    // const [projects, setProjects] =  useState(data.data.map(project => project.title));
     const [taskDetails, setTaskDetails] = useState({
         title: '',
         id: '',
-        projectName:'',
+        projectName: '',
         assignee: '',
         deadline: '',
         priority: 'High',
         description: '',
         status: 'Open',
     });
+
+    React.useEffect(() => {
+        dispatch(fetchProject())
+        dispatch(fetchUsers())
+    }, [])
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,16 +41,31 @@ export default () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+   
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log('Form submitted:', taskDetails);
+        console.log(taskDetails);
+        try {
+            
+            const projectId = e.target._id;
+            
+            
+            const apiUrl = `http://localhost:3000/projects/${projectId}`;
+            
+            // Make a PUT request to update the project
+            const response = await axios.put(apiUrl, taskDetails);
+            
+            console.log('Project updated:', response.data);
+        } catch (error) {
+            console.error('Error updating project:', error.response ? error.response.data : error.message);
+        }
     };
+    
+    return (<>{data.isLoggedIn ? (<Container>
 
-    return (<>{data.isLoggedIn? (<Container>
 
-
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} id={data.data._id}>
             <TextField
                 label="Title"
                 name="title"
@@ -58,31 +84,20 @@ export default () => {
                 margin="normal"
                 required
             />
-             <TextField
-                label="projects"
-                select
-                name="projectName"
-                value={taskDetails.projectName}
-                onChange={handleChange}
-                margin="normal"
-                fullWidth
-                required
-            >
-                {projects.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        {option}
-                    </MenuItem>
+            <select name='projectName' value={taskDetails.projectName} style={{width:"100%",height:"50px" ,marginBottom:"20px",borderColor:"gray"}} onChange={handleChange}>
+                { data.data && data.data.map((option) => (
+                    <option key={option._id} value={option.title}>
+                        {option.title}
+                    </option>
                 ))}
-            </TextField>
-            <TextField
-                label="Assignee"
-                name="assignee"
-                value={taskDetails.assignee}
-                onChange={handleChange}
-                fullWidth
-                required
-                margin="normal"
-            />
+            </select>
+            <select value={taskDetails.assignee} name='assignee' style={{width:"100%",height:"50px"}} onChange={handleChange}>
+                {userData.data && userData.data.map((option) => (
+                    <option key={option._id} value={option.fullName}>
+                        {option.fullName}
+                    </option>
+                ))}
+            </select>
             <TextField
                 label="Deadline"
                 type="date"
@@ -91,27 +106,12 @@ export default () => {
                 onChange={handleChange}
                 fullWidth
                 required
-                margin="normal"
+                margin="normal"Aj
                 InputLabelProps={{
                     shrink: true,
                 }}
             />
-            <TextField
-                label="Priority"
-                select
-                name="priority"
-                value={taskDetails.priority}
-                onChange={handleChange}
-                fullWidth
-                required
-                margin="normal"
-            >
-                {priorities.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        {option}
-                    </MenuItem>
-                ))}
-            </TextField>
+
             <TextField
                 label="Description"
                 name="description"
@@ -122,6 +122,22 @@ export default () => {
                 required
                 margin="normal"
             />
+            <TextField
+                label="Status"
+                select
+                name="status"
+                value={taskDetails.priority}
+                onChange={handleChange}
+                margin="normal"
+                fullWidth
+                required
+            >
+                {priorities.map((option) => (
+                    <MenuItem key={option} value={option}>
+                        {option}
+                    </MenuItem>
+                ))}
+            </TextField>
             <TextField
                 label="Status"
                 select
@@ -142,8 +158,8 @@ export default () => {
                 Submit
             </Button>
         </form>
-    </Container>):(<LogIn/>)}</>
-        
+    </Container>) : (<LogIn />)}</>
+
     );
 };
 

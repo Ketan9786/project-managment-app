@@ -8,8 +8,16 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
+import axios from 'axios';
 
 export default () => {
+    const dispatch = useDispatch();
+    const token = useSelector((state) => state.userLogin.token);
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -17,6 +25,16 @@ export default () => {
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+
+    const handelLogut = (e) => {
+        e.preventDefault();
+
+        Cookies.remove('token');
+        dispatch(loginUser());
+
+        handleClose();
     };
     return (
         <React.Fragment>
@@ -79,7 +97,7 @@ export default () => {
                 <Divider />
 
 
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handelLogut}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
