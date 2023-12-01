@@ -23,7 +23,7 @@ export default () => {
         pendingTask: 0,
         resolved: 0,
         status: 'Live',
-        tasks: [{ Ketan: "Kulkarni" }]
+        tasks: []
     });
 
     React.useEffect(() => {
@@ -62,7 +62,6 @@ export default () => {
         try {
           if (Array.isArray(projectData.data) && projectData.data.some) {
             const isProjectIdTaken = projectData.data.some((user) => user.id === projectDetails.id);
-    
             if (isProjectIdTaken) {
               alert("ProjectId is already taken. Please choose another id.");
               return;

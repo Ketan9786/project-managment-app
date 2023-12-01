@@ -8,6 +8,7 @@ import { fetchProject } from "../../redux/slice/projectData";
 import { fetchUsers } from "../../redux/slice/userData";
 import LogIn from '../LogIn';
 import axios from 'axios';
+
 const priorities = ['Low', 'Medium', 'High'];
 const statuses = ['Open', 'In Progress', 'Pending', 'Resolved'];
 
@@ -15,10 +16,10 @@ export default () => {
     const dispatch = useDispatch();
     const data = useSelector((state) => state.projectData);
     const userData = useSelector((state) => state.userData);
-    // const [projects, setProjects] =  useState(data.data.map(project => project.title));
+    const [projectID, setProjectID] = useState();
+     const[newProjectData,setNewProjectData]=useState();
     const [taskDetails, setTaskDetails] = useState({
         title: '',
-        id: '',
         projectName: '',
         assignee: '',
         deadline: '',
@@ -30,8 +31,18 @@ export default () => {
     React.useEffect(() => {
         dispatch(fetchProject())
         dispatch(fetchUsers())
-    }, [])
-    
+
+        if(projectID){
+            const fetchData = async () => {
+                const projectResponse = await axios.get(`http://localhost:3001/projects/${projectID}`);
+                const projectById = projectResponse.data;
+                setNewProjectData(projectById);
+            }
+            fetchData();
+        }
+        
+    }, [projectID])
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,33 +50,57 @@ export default () => {
             ...prevDetails,
             [name]: value,
         }));
+
     };
 
-   
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(taskDetails);
+        const updatedProjectData = {
+            ...newProjectData,
+            tasks: Array.isArray(newProjectData.tasks)
+                ? [...newProjectData.tasks, taskDetails]
+                : [taskDetails]
+        };
         try {
-            
-            const projectId = e.target._id;
-            
-            
-            const apiUrl = `http://localhost:3000/projects/${projectId}`;
-            
-            // Make a PUT request to update the project
-            const response = await axios.put(apiUrl, taskDetails);
-            
-            console.log('Project updated:', response.data);
+            const response = await fetch(`http://localhost:3001/projects/${projectID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedProjectData),
+            });
+
+            if (response.ok) {
+                console.log('Task Updated successfully:', response.data);
+                setTaskDetails({
+                    title: '',
+                    projectName: '',
+                    assignee: '',
+                    deadline: '',
+                    priority: 'High',
+                    description: '',
+                    status: 'Open',
+                })
+                setProjectID();
+
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to update project details:', errorData);
+            }
         } catch (error) {
-            console.error('Error updating project:', error.response ? error.response.data : error.message);
+            console.error('Error updating project details:', error);
         }
+
+        
     };
     
+
     return (<>{data.isLoggedIn ? (<Container>
 
 
-        <form onSubmit={handleSubmit} id={data.data._id}>
+        <form onSubmit={handleSubmit} >
             <TextField
                 label="Title"
                 name="title"
@@ -75,29 +110,49 @@ export default () => {
                 required
                 margin="normal"
             />
+           
             <TextField
-                label="ID"
-                name="id"
-                value={taskDetails.id}
+                label="Project Name"
+                name="projectName"
+                value={taskDetails.projectName}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
+                select
                 required
-            />
-            <select name='projectName' value={taskDetails.projectName} style={{width:"100%",height:"50px" ,marginBottom:"20px",borderColor:"gray"}} onChange={handleChange}>
-                { data.data && data.data.map((option) => (
-                    <option key={option._id} value={option.title}>
+            >
+                {/* <select name='projectName' defaultValue="{taskDetails.projectName}" style={{width:"100%",height:"50px" ,marginBottom:"20px",borderColor:"gray"}} onChange={handleChange} onClick={(e)=> console.log(e.target.value)} > */}
+                \
+                {data.data && data.data.map((option) => (
+                    <MenuItem key={option._id} value={option.title} id={option._id} onClick={(e) => { setProjectID(e.target.id) }} >
                         {option.title}
-                    </option>
+                    </MenuItem>
                 ))}
-            </select>
-            <select value={taskDetails.assignee} name='assignee' style={{width:"100%",height:"50px"}} onChange={handleChange}>
+                \
+                {/* </select> */}
+            </TextField>
+
+            <TextField
+                label="Assignee Name"
+                name="assignee"
+                value={taskDetails.assignee}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                select
+                required
+            >
+
+                {/* <select value={taskDetails.assignee} name='assignee' style={{width:"100%",height:"50px"}} onChange={handleChange}> */}
+                \
                 {userData.data && userData.data.map((option) => (
-                    <option key={option._id} value={option.fullName}>
+                    <MenuItem key={option._id} value={option.fullName}>
                         {option.fullName}
-                    </option>
+                    </MenuItem>
                 ))}
-            </select>
+                \
+                {/* </select> */}
+            </TextField>
             <TextField
                 label="Deadline"
                 type="date"
@@ -106,7 +161,7 @@ export default () => {
                 onChange={handleChange}
                 fullWidth
                 required
-                margin="normal"Aj
+                margin="normal"
                 InputLabelProps={{
                     shrink: true,
                 }}
@@ -123,9 +178,9 @@ export default () => {
                 margin="normal"
             />
             <TextField
-                label="Status"
+                label="Priority"
                 select
-                name="status"
+                name="priority"
                 value={taskDetails.priority}
                 onChange={handleChange}
                 margin="normal"
