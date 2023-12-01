@@ -10,25 +10,26 @@ import Button from '@mui/material/Button';
 import TablePagination from '@mui/material/TablePagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProject } from "../../redux/slice/projectData";
+import { useNavigate } from 'react-router-dom';
 
 export default () => {
   const [rows, setRows] = React.useState([]);
   const [editingRow, setEditingRow] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const navigate = useNavigate();
 
-  //data from redux store
   const dispatch = useDispatch();
   const data = useSelector((state) => state.projectData);
- 
 
-  React.useEffect(()=>{
+
+  React.useEffect(() => {
     dispatch(fetchProject())
-  },[])
+  }, [])
 
   const handleEditClick = (key) => {
     setRows(data.data)
-   
+
     setEditingRow(key);
   };
 
@@ -38,7 +39,7 @@ export default () => {
   };
 
   const handleEditChange = (e, key, field) => {
-    
+
     const value = e.target.value;
     setRows((prevRows) =>
       prevRows.map((row) =>
@@ -54,9 +55,12 @@ export default () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const handelNavigate =(data)=>{
+   
+    navigate("/project", { state: { projectData: data } });
+  }
   if (data.isLoading) {
-    
+
     return <h1>isLoading ...</h1>
   }
 
@@ -86,17 +90,22 @@ export default () => {
                 key={row._id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
+
+                <TableCell component="th" scope="row" onClick={()=>handelNavigate(row)}>
                   {editingRow === row._id ? (
                     <input
                       type="text"
                       defaultValue={row.title}
                       onChange={(e) => handleEditChange(e, row._id, 'title')}
+                      
                     />
                   ) : (
+                   
                     row.title
+                
                   )}
                 </TableCell>
+
                 <TableCell component="th" scope="row">
                   {editingRow === row._id ? (
                     <input

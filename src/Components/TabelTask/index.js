@@ -11,7 +11,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProject } from "../../redux/slice/projectData";
 
-export default () => {
+export default ({projectid}) => {
   const [rows, setRows] = React.useState([]);
   const [editingRow, setEditingRow] = React.useState(null);
   const [page, setPage] = React.useState(0);
@@ -23,6 +23,7 @@ export default () => {
 
 
   React.useEffect(() => {
+   
     dispatch(fetchProject())
   }, [])
 
