@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProject } from "../../redux/slice/projectData";
 import { fetchUsers } from "../../redux/slice/userData";
@@ -17,9 +17,11 @@ export default () => {
     const data = useSelector((state) => state.projectData);
     const userData = useSelector((state) => state.userData);
     const [projectID, setProjectID] = useState();
-     const[newProjectData,setNewProjectData]=useState();
+    const [taskID, setTaskID] = useState("");
+    const [newProjectData, setNewProjectData] = useState();
     const [taskDetails, setTaskDetails] = useState({
         title: '',
+        id: '',
         projectName: '',
         assignee: '',
         deadline: '',
@@ -32,15 +34,17 @@ export default () => {
         dispatch(fetchProject())
         dispatch(fetchUsers())
 
-        if(projectID){
+        if (projectID) {
             const fetchData = async () => {
                 const projectResponse = await axios.get(`http://localhost:3001/projects/${projectID}`);
                 const projectById = projectResponse.data;
                 setNewProjectData(projectById);
+                const taskid= projectById.id + (projectById.tasks.length + 1);
+                setTaskID(taskid)
             }
             fetchData();
         }
-        
+
     }, [projectID])
 
 
@@ -49,6 +53,7 @@ export default () => {
         setTaskDetails((prevDetails) => ({
             ...prevDetails,
             [name]: value,
+            id:taskID
         }));
 
     };
@@ -57,6 +62,8 @@ export default () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+      
         const updatedProjectData = {
             ...newProjectData,
             tasks: Array.isArray(newProjectData.tasks)
@@ -73,9 +80,10 @@ export default () => {
             });
 
             if (response.ok) {
-                console.log('Task Updated successfully:', response.data);
+                console.log('Task Updated successfully:');
                 setTaskDetails({
                     title: '',
+                    id: '',
                     projectName: '',
                     assignee: '',
                     deadline: '',
@@ -93,9 +101,9 @@ export default () => {
             console.error('Error updating project details:', error);
         }
 
-        
+
     };
-    
+
 
     return (<>{data.isLoggedIn ? (<Container>
 
@@ -110,7 +118,18 @@ export default () => {
                 required
                 margin="normal"
             />
-           
+              <TextField
+                label="ID"
+                name="id"
+                value={taskDetails.id}
+                onChange={handleChange}
+                fullWidth
+                required
+                margin="normal"
+                disabled
+            />
+
+
             <TextField
                 label="Project Name"
                 name="projectName"
@@ -121,10 +140,16 @@ export default () => {
                 select
                 required
             >
+
+
                 {/* <select name='projectName' defaultValue="{taskDetails.projectName}" style={{width:"100%",height:"50px" ,marginBottom:"20px",borderColor:"gray"}} onChange={handleChange} onClick={(e)=> console.log(e.target.value)} > */}
                 \
-                {data.data && data.data.map((option) => (
-                    <MenuItem key={option._id} value={option.title} id={option._id} onClick={(e) => { setProjectID(e.target.id) }} >
+                {data.data && data.data.map((option,idx) => (
+                    <MenuItem key={option._id} value={option.title} id={option._id} onClick={(e) => { 
+                        setProjectID(e.target.id) 
+                        setTaskID(taskID);
+                        
+                        }} >
                         {option.title}
                     </MenuItem>
                 ))}
