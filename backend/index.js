@@ -5,22 +5,23 @@ const UsersModel = require("./models/Users");
 const ProjectModel = require("./models/Project");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const cookieParser =require('cookie-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express();
+const port = 3001;
+
 app.use(express.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Methods", "GET, POST");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
 app.use(cors({
-    origin:["http://localhost:3001"],
-    methods:["GET","POST"],
-    credentials:true
-
+    origin: ["http://localhost:3001"],
+    methods: ["GET", "POST", "PUT"],
+    credentials: true
 }));
 app.use(cookieParser())
 
@@ -79,11 +80,22 @@ app.get('/projects', (req, res) => {
         .then(projects => res.json(projects))
         .catch(err => res.status(500).json(err));
 });
-
-app.put('/projects/:projectId', (req, res) => {
+app.get('/projects/:projectId', (req, res) => {
     const projectId = req.params.projectId;
 
+    ProjectModel.findById(projectId)
+        .then(project => {
+            if (!project) {
+                return res.status(404).json({ error: 'Project not found' });
+            }
+            res.json(project);
+        })
+        .catch(err => res.status(500).json(err));
+});
+app.put('/projects/:projectId', (req, res) => {
+    const projectId = req.params.projectId;
     const updatedProjectData = req.body;
+    console.log(projectId, updatedProjectData);
 
     ProjectModel.findByIdAndUpdate(projectId, updatedProjectData, { new: true })
         .then(updatedProject => {
@@ -94,8 +106,7 @@ app.put('/projects/:projectId', (req, res) => {
         })
         .catch(err => res.status(500).json(err));
 });
-
-const PORT = process.env.PORT || 3001; 
-app.listen(3001, () => {
+const PORT = process.env.PORT || port;
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
