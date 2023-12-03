@@ -17,6 +17,7 @@ export default () => {
     const data = useSelector((state) => state.projectData);
     const userData = useSelector((state) => state.userData);
     const [projectID, setProjectID] = useState();
+     
     const [taskID, setTaskID] = useState("");
     const [newProjectData, setNewProjectData] = useState();
     const [taskDetails, setTaskDetails] = useState({

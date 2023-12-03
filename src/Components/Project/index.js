@@ -4,13 +4,14 @@ import LogIn from "../LogIn";
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import axios from 'axios';
 export default () => {
     const data = useSelector((state) => state.userLogin);
     const location = useLocation();
     const navigate = useNavigate();
-    const projectData = location.state?.projectData;
+    const projectData = location.state?.projectData || null;
+    const [projectID, setProjectID] =useState();
     const [isEditing, setIsEditing] = useState(false)
     const [editedProjectData, setEditedProjectData] = useState({
         title: projectData.title,
@@ -22,20 +23,34 @@ export default () => {
         status: projectData.status,
         tasks: projectData.tasks
     });
+
+    useEffect(() => {
+
+
+        if (projectData._id) {
+            const fetchData = async () => {
+                const projectResponse = await axios.get(`http://localhost:3001/projects/${projectData._id}`);
+                const projectById = projectResponse.data;
+             
+            }
+            fetchData();
+        }
+
+    }, [isEditing])
     const handelEditChange = (e) => {
         const { name, value } = e.target;
         setEditedProjectData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
-      
+
     };
-    
+
     const handleEditClick = () => {
         setIsEditing(!isEditing);
     };
     const handleSaveClick = async () => {
-    
+        
         try {
             const response = await fetch(`http://localhost:3001/projects/${projectData._id}`, {
                 method: 'PUT',
@@ -55,7 +70,7 @@ export default () => {
         } catch (error) {
             console.error('Error updating project details:', error);
         }
-      
+
     };
 
     return (<>{data.isLoggedIn ? (<Container>
@@ -67,7 +82,7 @@ export default () => {
                 <Typography variant="h5" component="div">
                     {isEditing ? (<TextField label="Project Key" name="id" defaultValue={projectData.id} fullWidth onChange={handelEditChange} ></TextField>) : (projectData.id)}
                 </Typography>
-                {isEditing?(<Button variant="contained" onClick={handleSaveClick}>Save</Button>):(<Button variant="contained" onClick={handleEditClick}>Edit</Button>)}
+                {isEditing ? (<Button variant="contained" onClick={handleSaveClick}>Save</Button>) : (<Button variant="contained" onClick={handleEditClick}>Edit</Button>)}
             </Stack>
 
             <Stack direction="row" justifyContent="space-between" alignItems="flex-end">
